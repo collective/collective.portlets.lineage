@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- This file holds the setup configuration for the portal_skins tool -->
+<object name="portal_skins">
+ <object name="scripts"
+    meta_type="Filesystem Directory View"
+    directory="collective.portlets.lineage:skins/scripts" />
+ <object name="templates"
+    meta_type="Filesystem Directory View"
+    directory="collective.portlets.lineage:skins/templates" />
+ <skin-path name="*">
+  <layer name="scripts"
+    insert-after="*"/>
+  <layer name="templates"
+    insert-after="*"/>
+ </skin-path>
+</object>

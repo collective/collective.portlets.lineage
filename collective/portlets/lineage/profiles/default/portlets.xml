@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<portlets>
+
+ <!-- Portlet type registrations -->
+
+  <portlet
+    addview="collective.portlets.lineage.LineageNewsPortlet"
+    title="Lineage News Portlet"
+    description="ChildSite (subsite) aware news portlet">
+    <for interface="plone.app.portlets.interfaces.IColumn" />
+    <for interface="plone.app.portlets.interfaces.IDashboard" />
+  </portlet> 
+  <portlet
+    addview="collective.portlets.lineage.LineageEventsPortlet"
+    title="Lineage Events Portlet"
+    description="ChildSite (subsite) aware Events portlet">
+    <for interface="plone.app.portlets.interfaces.IColumn" />
+    <for interface="plone.app.portlets.interfaces.IDashboard" />
+  </portlet> 
+  <portlet
+    addview="collective.portlets.lineage.LineageSearchPortlet"
+    title="Lineage Search Portlet"
+    description="ChildSite (subsite) aware search portlet.">
+    <for interface="plone.app.portlets.interfaces.IColumn" />
+    <for interface="plone.app.portlets.interfaces.IDashboard" />
+  </portlet>
+  <portlet
+    addview="collective.portlets.lineage.LineageRecentPortlet"
+    title="Lineage Recent Items"
+    description="ChildSite (subsite) aware recently modified portlet.">
+    <for interface="plone.app.portlets.interfaces.IColumn" />
+    <for interface="plone.app.portlets.interfaces.IDashboard" />
+  </portlet>
+  <portlet
+    addview="collective.portlets.lineage.LineageReviewPortlet"
+    title="Lineage Review"
+    description="ChildSite (subsite) aware items awating review portlet.">
+    <for interface="plone.app.portlets.interfaces.IColumn" />
+    <for interface="plone.app.portlets.interfaces.IDashboard" />
+  </portlet>
+</portlets>

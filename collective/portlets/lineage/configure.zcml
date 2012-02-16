@@ -1,0 +1,94 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:cmf="http://namespaces.zope.org/cmf"
+    i18n_domain="collective.portlets.lineage">
+
+    <includeDependencies package="." />
+
+    <five:registerPackage package="." initialize=".initialize" />
+    
+    <cmf:registerDirectory name="skins" directory="skins" recursive="True" />
+
+    <genericsetup:registerProfile
+       name="default"
+       title="Lineage Portlets"
+       directory="profiles/default"
+       description="A collection of collective.lineage aware portlets"
+       provides="Products.GenericSetup.interfaces.EXTENSION"
+       />
+       
+     <genericsetup:registerProfile
+       name="uninstall"
+       title="Uninstall Lineage Portlets"
+       directory="profiles/default"
+       description="Uninstall the collection of collective.lineage aware portlets"
+       provides="Products.GenericSetup.interfaces.EXTENSION"
+       />
+
+     <!-- Register the portlet -->
+
+     <!-- If the portlet has no configurable parameters, you can remove
+          the EditForm declaration in lineageportlets.py and delete
+          the 'editview' attribute from this statement.
+    -->
+
+ 
+     <plone:portlet
+        name="collective.portlets.lineage.LineageNewsPortlet"
+        interface=".LineageNewsPortlet.ILineageNewsPortlet"
+        view_permission="zope2.View"
+        edit_permission="cmf.ManagePortal"
+        assignment=".LineageNewsPortlet.Assignment"
+        renderer=".LineageNewsPortlet.Renderer"
+        addview=".LineageNewsPortlet.AddForm"
+        editview=".LineageNewsPortlet.EditForm"
+        />
+        
+    <plone:portlet
+        name="collective.portlets.lineage.LineageEventsPortlet"
+        interface=".LineageEventsPortlet.ILineageEventsPortlet"
+        view_permission="zope2.View"
+        edit_permission="cmf.ManagePortal"
+        assignment=".LineageEventsPortlet.Assignment"
+        renderer=".LineageEventsPortlet.Renderer"
+        addview=".LineageEventsPortlet.AddForm"
+        editview=".LineageEventsPortlet.EditForm"
+        />
+
+    <plone:portlet
+        name="collective.portlets.lineage.LineageSearchPortlet"
+        interface=".LineageSearchPortlet.ILineageSearchPortlet"
+        view_permission="zope2.View"
+        edit_permission="cmf.ManagePortal"
+        assignment=".LineageSearchPortlet.Assignment"
+        renderer=".LineageSearchPortlet.Renderer"
+        addview=".LineageSearchPortlet.AddForm"
+        editview=".LineageSearchPortlet.EditForm"
+        />
+
+    <plone:portlet
+        name="collective.portlets.lineage.LineageRecentPortlet"
+        interface=".LineageRecentPortlet.ILineageRecentPortlet"
+        view_permission="zope2.View"
+        edit_permission="cmf.ManagePortal"
+        assignment=".LineageRecentPortlet.Assignment"
+        renderer=".LineageRecentPortlet.Renderer"
+        addview=".LineageRecentPortlet.AddForm"
+        editview=".LineageRecentPortlet.EditForm"
+        />
+
+    <plone:portlet
+        name="collective.portlets.lineage.LineageReviewPortlet"
+        interface=".LineageReviewPortlet.ILineageReviewPortlet"
+        view_permission="zope2.View"
+        edit_permission="cmf.ManagePortal"
+        assignment=".LineageReviewPortlet.Assignment"
+        renderer=".LineageReviewPortlet.Renderer"
+        addview=".LineageReviewPortlet.AddForm"
+        editview=".LineageReviewPortlet.EditForm"
+        />
+
+</configure>

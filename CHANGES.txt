@@ -1,0 +1,3 @@
+v1.0, 12/25/2009 -- Initial release, includes News, Events, Search portlets
+v1.0, 12/27/2009 -- Second update, includes Recent portlet
+v1.0, 01/19/2010 -- Third update, includes Review portlet
