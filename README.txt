@@ -22,12 +22,7 @@ Add the following to your buildout:
         collective.lineage
         collective.portlets.lineage
 
-    zcml =
-        ...
-        collective.lineage
-        collective.portlets.lineage
-
-Install via zmi->setup_tools->import. Be sure to install collective.lineages first, then install this package. To add the portlets, use the manage portlets link.
+Install via quickinstaller, Add Ons control panel. 
 
 TODO: include Calendar portlet
 
