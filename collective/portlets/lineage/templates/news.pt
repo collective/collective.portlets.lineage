@@ -9,7 +9,7 @@
         <a href="#" 
            class="tile"
            tal:attributes="href view/all_news_link"
-           i18n:translate="box_news">News</a>
+           i18n:translate="box_news"><span tal:content="view/title">News</span></a>
         <span class="portletTopRight"></span>
     </dt>
 

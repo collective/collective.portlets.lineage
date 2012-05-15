@@ -112,6 +112,9 @@ class Renderer(base.Renderer):
         else:
             return None
 
+    def title(self):
+        return self.data.customTitle
+
     @memoize
     def _data(self):
         context = aq_inner(self.context)
