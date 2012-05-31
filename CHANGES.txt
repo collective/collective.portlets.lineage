@@ -1,7 +1,13 @@
 v1.0, 12/25/2009 -- Initial release, includes News, Events, Search portlets
 v1.0, 12/27/2009 -- Second update, includes Recent portlet
 v1.0, 01/19/2010 -- Third update, includes Review portlet
+v1.1, 05/15/2012 -- custom titles for News and Events portlet
+v1.1.1, 05/31/2012 -- news portlet default title is News, events portlet default title is 'Upcoming Events'
 
 1.1 05-15-2012
 --------------
 - adds ability to have custom titles for News, Events portlets [ableeb]
+
+1.1.1 05-31-2012
+--------------
+- changes the default names of news portlet to News, and default name of events portlet to Upcoming Events
