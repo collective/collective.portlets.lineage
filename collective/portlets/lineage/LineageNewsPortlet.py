@@ -50,7 +50,7 @@ class Assignment(base.Assignment):
     
     implements(ILineageNewsPortlet)
 
-    customTitle = u"Lineage News"
+    customTitle = u"News"
     count = 5
     state = ('published')
     excludeSubsite = False

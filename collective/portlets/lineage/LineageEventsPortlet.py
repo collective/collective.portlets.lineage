@@ -50,7 +50,7 @@ class Assignment(base.Assignment):
     
     implements(ILineageEventsPortlet)
     
-    customTitle = u"Lineage Events"
+    customTitle = u"Upcoming Events"
     count = 5
     state = ('published')
     excludeSubsite = False
