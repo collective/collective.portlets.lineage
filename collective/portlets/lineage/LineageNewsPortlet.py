@@ -55,7 +55,7 @@ class Assignment(base.Assignment):
     state = ('published')
     excludeSubsite = False
 
-    def __init__(self, customTitle=u"Lineage News", count=5, state=('published', ), excludeSubsite=False):
+    def __init__(self, customTitle=u"News", count=5, state=('published', ), excludeSubsite=False):
         self.customTitle = customTitle
         self.count = count
         self.state = state
