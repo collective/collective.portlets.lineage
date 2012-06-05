@@ -112,7 +112,7 @@ class Renderer(base.Renderer):
         query = catalog.makeAdvancedQuery({'portal_type':'News Item', 'review_state':state, 'path':path, 'sort_on':'Date','sort_order':'reverse','sort_limit':limit})
         if excludeSubsite:
             query &= ~ In('path', get_subsites(path,catalog), filter=True)
-        results = catalog.evalAdvancedQuery(query,('Date','desc'),)
+        results = catalog.evalAdvancedQuery(query, (('Date','desc'),))
         return results[:limit]
         
 
