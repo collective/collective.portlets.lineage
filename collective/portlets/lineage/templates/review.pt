@@ -1,15 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      tal:omit-tag="">
 <dl class="portlet portletWorkflowReview"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:tal="http://xml.zope.org/namespaces/tal"
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="plone">
 
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
-        <a href="#" 
+        <a href="#"
            class="tile"
            tal:attributes="href view/full_review_link"
-           i18n:translate="box_review_list">Review List</a>
+           i18n:translate=""
+           tal:content="view/title" />
         <span class="portletTopRight"></span>
     </dt>
 
@@ -37,7 +39,7 @@
     </tal:items>
 
     <dd class="portletFooter">
-        <a href="#" 
+        <a href="#"
            class="tile"
            tal:attributes="href view/full_review_link"
            i18n:translate="box_full_review_list">Full review list&hellip;</a>
@@ -45,3 +47,4 @@
         <span class="portletBottomRight"></span>
     </dd>
 </dl>
+</html>

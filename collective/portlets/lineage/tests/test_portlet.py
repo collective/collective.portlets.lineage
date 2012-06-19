@@ -181,7 +181,7 @@ class LineageEventsPortletTest(LineagePortletsTestCase):
         self.portal.invokeFactory('Child Folder', 'site1')
         context = self.portal.site1
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('draft',), excludeSubsite=False))
-        self.assertEquals("Lineage Events", r.data.customTitle)
+        self.assertEquals("Events", r.data.customTitle)
 
     def test_published_events_parent_exclude_subsite(self):
         self.portal.invokeFactory('Child Folder', 'site1')
@@ -315,7 +315,7 @@ class LineageNewsPortletTest(LineagePortletsTestCase):
         self.portal.invokeFactory('Child Folder', 'site1')
         context = self.portal.site1
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('draft',), excludeSubsite=False))
-        self.assertEquals("Lineage News", r.data.customTitle)
+        self.assertEquals("News", r.data.customTitle)
 
     def test_published_news_parent_exclude_subsite(self):
         self.portal.invokeFactory('Child Folder', 'site1')

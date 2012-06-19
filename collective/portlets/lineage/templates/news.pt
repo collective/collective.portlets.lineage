@@ -1,15 +1,16 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      tal:omit-tag="">
 <dl class="portlet portletNews"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:tal="http://xml.zope.org/namespaces/tal"
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="plone">
 
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
-        <a href="#" 
+        <a href="#"
            class="tile"
            tal:attributes="href view/all_news_link"
-           i18n:translate="box_news"><span tal:content="view/title">News</span></a>
+           i18n:translate="box_news">News</a>
         <span class="portletTopRight"></span>
     </dt>
 
@@ -29,9 +30,10 @@
             <span tal:replace="obj/pretty_title_or_id">
             Plone 2.1 announced!
             </span>
+         </a>
             <span class="portletItemDetails"
                   tal:content="python:toLocalizedTime(obj.Date)">May 5</span>
-        </a>
+        
     </dd>
     </tal:newsitems>
 
@@ -52,3 +54,4 @@
     </dd>
     </tal:block>
 </dl>
+</html>
