@@ -49,6 +49,9 @@ def _render_cachekey(fun, self):
 class Renderer(base.Renderer):
     _template = ViewPageTemplateFile('templates/recent.pt')
 
+    title = _('box_recent_changes', default=u"Recent Changes")
+
+
     def __init__(self, *args):
         base.Renderer.__init__(self, *args)
 

@@ -40,6 +40,8 @@ class Renderer(base.Renderer):
 
     render = ViewPageTemplateFile('templates/review.pt')
 
+    title = _('box_review_list', default=u"Review List")
+
     def __init__(self, *args):
         base.Renderer.__init__(self, *args)
 
