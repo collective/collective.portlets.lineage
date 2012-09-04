@@ -67,7 +67,8 @@ class Renderer(base.Renderer):
         return self.data.enableLivesearch
 
     def search_form(self):
-        return '%s/search_form' % self.navigation_root_url
+        #return '%s/search_form' % self.navigation_root_url
+        return '%s/@@search' % self.navigation_root_url
 
     def search_action(self):
         return '%s/search_portlet_results' % self.navigation_root_url
