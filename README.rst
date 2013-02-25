@@ -13,7 +13,8 @@ Currently, the following portlets are included in this package:
  - Search
  - Review
 
-Included portlets have been diffed against plone.app.portlets 2.3.7
+Included portlets have been diffed against plone.app.portlets 2.3.7,
+included with Plone 4.2.4
 
 Usage
 ========
