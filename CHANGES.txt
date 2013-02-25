@@ -30,3 +30,7 @@ v1.1.1, 05/31/2012 -- news portlet default title is News, events portlet default
 1.2.1 06-19-2012
 ----------------
 - Fix portlet class files for 4.1.5 compatibilty
+
+1.2.2 02-25-2013
+----------------
+- Fix portlet class files and templates for p.a.portlets-2.3.7 compatibility

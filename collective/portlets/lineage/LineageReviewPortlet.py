@@ -20,11 +20,14 @@ from collective.portlets.lineage.LineagePortletsCommon import get_subsites
 
 
 class ILineageReviewPortlet(IPortletDataProvider):
-    
+
     excludeSubsite = schema.Bool(title=_(u"Exclude subsites"),
-                               description = _(u"If selected, results will not include items contained in subsites."),
-                               default = False,
-                               required = False)
+                                 description=_(u"If selected, results will \
+                                               not include items contained \
+                                               in subsites."),
+                                 default=False,
+                                 required=False)
+
 
 class Assignment(base.Assignment):
     implements(ILineageReviewPortlet)
@@ -36,18 +39,12 @@ class Assignment(base.Assignment):
     def title(self):
         return _(u"Review list")
 
+
 class Renderer(base.Renderer):
 
     render = ViewPageTemplateFile('templates/review.pt')
 
     title = _('box_review_list', default=u"Review List")
-
-    def __init__(self, *args):
-        base.Renderer.__init__(self, *args)
-
-        context = aq_inner(self.context)
-        portal_state = getMultiAdapter((context, self.request), name=u'plone_portal_state')
-        self.navigation_root_path = portal_state.navigation_root_path()
 
     @property
     def anonymous(self):
@@ -65,9 +62,12 @@ class Renderer(base.Renderer):
 
     def full_review_link(self):
         context = aq_inner(self.context)
-        portal_state = getMultiAdapter((context, self.request),
-                                       name=u'plone_portal_state')
-        return '%s/full_review_list' % portal_state.portal_url()
+        mtool = getToolByName(context, 'portal_membership')
+        # check if user is allowed to Review Portal Content here
+        if mtool.checkPermission('Review portal content', context):
+            return '%s/full_review_list' % context.absolute_url()
+        else:
+            return None
 
     @memoize
     def _data(self):
@@ -77,6 +77,7 @@ class Renderer(base.Renderer):
         workflow = getToolByName(context, 'portal_workflow')
 
         plone_view = getMultiAdapter((context, self.request), name=u'plone')
+        getMember = getToolByName(context, 'portal_membership').getMemberById
         getIcon = plone_view.getIcon
         toLocalizedTime = plone_view.toLocalizedTime
 
@@ -88,34 +89,44 @@ class Renderer(base.Renderer):
         norm = idnormalizer.normalize
         objects = workflow.getWorklistsResults()
         items = []
-        # use advanced query to filter out content in subsites 
+        # use advanced query to filter out content in subsites
         if excludeSubsite:
-            query = catalog.makeAdvancedQuery({'review_state': 'pending', 'path': nav_root_path})
-            query &= ~In('path', get_subsites(nav_root_path,catalog), filter=True)
+            query = catalog.makeAdvancedQuery({'review_state': 'pending',
+                                              'path': nav_root_path})
+            query &= ~In('path', get_subsites(nav_root_path, catalog),
+                         filter=True)
             results = catalog.evalAdvancedQuery(query)
             for obj in results:
                 items.append(dict(
-                    path = obj.getURL(),
-                    title = obj.pretty_title_or_id(),
-                    description = obj.Description,
-                    icon = getIcon(obj).html_tag(),
-                    creator = obj.Creator,
-                    review_state = obj.review_state,
-                    review_state_class = 'state-%s ' % norm(obj.review_state),
-                    mod_date = toLocalizedTime(obj.ModificationDate),
+                    path=obj.getURL(),
+                    title=obj.pretty_title_or_id(),
+                    description=obj.Description,
+                    icon=getIcon(obj).html_tag(),
+                    creator=obj.Creator,
+                    review_state=obj.review_state,
+                    review_state_class='state-%s ' % norm(obj.review_state),
+                    mod_date=toLocalizedTime(obj.ModificationDate),
                 ))
             return items
         for obj in objects:
             review_state = workflow.getInfoFor(obj, 'review_state')
+            creator_id = obj.Creator()
+            creator = getMember(creator_id)
+            if creator:
+                creator_name = creator.getProperty('fullname', '') or \
+                    creator_id
+            else:
+                creator_name = creator_id
+
             items.append(dict(
-                path = obj.absolute_url(),
-                title = obj.pretty_title_or_id(),
-                description = obj.Description(),
-                icon = getIcon(obj).html_tag(),
-                creator = obj.Creator(),
-                review_state = review_state,
-                review_state_class = 'state-%s ' % norm(review_state),
-                mod_date = toLocalizedTime(obj.ModificationDate()),
+                path=obj.absolute_url(),
+                title=obj.pretty_title_or_id(),
+                description=obj.Description(),
+                icon=getIcon(obj).html_tag(),
+                creator=obj.Creator(),
+                review_state=review_state,
+                review_state_class='state-%s ' % norm(review_state),
+                mod_date=toLocalizedTime(obj.ModificationDate()),
             ))
         return items
 
@@ -127,6 +138,7 @@ class AddForm(base.AddForm):
 
     def create(self, data):
         return Assignment(excludeSubsite=data.get('excludeSubsite'))
+
 
 class EditForm(base.EditForm):
     form_fields = form.Fields(ILineageReviewPortlet)

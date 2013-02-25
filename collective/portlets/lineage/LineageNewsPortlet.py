@@ -20,12 +20,13 @@ from Products.AdvancedQuery import *
 from collective.portlets.lineage import LineagePortletsMessageFactory as _
 from collective.portlets.lineage.LineagePortletsCommon import get_subsites
 
+
 class ILineageNewsPortlet(IPortletDataProvider):
 
-    customTitle = schema.TextLine(title = _(u"Add a title"),
-                                  description = _(u"Displays a custom title for this portlet."),
-                                  required = False)
-
+    customTitle = schema.TextLine(title=_(u"Add a title"),
+                                  description=_(u"Displays a custom title \
+                                                  for this portlet."),
+                                  required=False)
 
     count = schema.Int(title=_(u'Number of items to display'),
                        description=_(u'How many items to list.'),
@@ -33,21 +34,24 @@ class ILineageNewsPortlet(IPortletDataProvider):
                        default=5)
 
     state = schema.Tuple(title=_(u"Workflow state"),
-                         description=_(u"Items in which workflow state to show."),
+                         description=_(u"Items in which workflow \
+                                       state to show."),
                          default=('published', ),
                          required=True,
                          value_type=schema.Choice(
                              vocabulary="plone.app.vocabularies.WorkflowStates")
                          )
-    
+
     excludeSubsite = schema.Bool(title=_(u"Exclude subsites"),
-                                 description = _(u"If selected, search results will not include news items added to subsites."),
-                                 default = False,
-                                 required = False)
+                                 description=_(u"If selected, search results \
+                                               will not include news items \
+                                               added to subsites."),
+                                 default=False,
+                                 required=False)
 
 
 class Assignment(base.Assignment):
-    
+
     implements(ILineageNewsPortlet)
 
     customTitle = u"News"
@@ -55,31 +59,26 @@ class Assignment(base.Assignment):
     state = ('published')
     excludeSubsite = False
 
-    def __init__(self, customTitle=u"News", count=5, state=('published', ), excludeSubsite=False):
+    def __init__(self, customTitle=u"News", count=5, state=('published', ),
+                 excludeSubsite=False):
         self.customTitle = customTitle
         self.count = count
         self.state = state
         self.excludeSubsite = excludeSubsite
-
 
     @property
     def title(self):
         if self.customTitle is None:
             self.customTitle = u"Lineage News"
         return self.customTitle
-        
+
+
 class Renderer(base.Renderer):
 
     _template = ViewPageTemplateFile('templates/news.pt')
 
     def __init__(self, *args):
         base.Renderer.__init__(self, *args)
-
-        context = aq_inner(self.context)
-        portal_state = getMultiAdapter((context, self.request), name=u'plone_portal_state')
-        self.portal = portal_state.portal()
-        self.navigation_root_url = portal_state.navigation_root_url()
-        self.navigation_root_path = portal_state.navigation_root_path()
 
     @ram.cache(render_cachekey)
     def render(self):
@@ -93,28 +92,35 @@ class Renderer(base.Renderer):
         return self._data()
 
     def all_news_link(self):
-        if 'news' in getNavigationRootObject(self.context, self.portal).objectIds():
-            return '%s/news' % self.navigation_root_url
-        else:
-            return None
-
-    def title(self):
-        return self.data.customTitle
+        context = aq_inner(self.context)
+        portal_state = getMultiAdapter((context, self.request),
+                                       name=u'plone_portal_state')
+        portal = portal_state.portal()
+        if 'news' in getNavigationRootObject(context, portal).objectIds():
+            return '%s/news' % portal_state.navigation_root_url()
+        return None
 
     @memoize
     def _data(self):
         context = aq_inner(self.context)
         catalog = getToolByName(context, 'portal_catalog')
-        path = self.navigation_root_path
+        portal_state = getMultiAdapter((context, self.request),
+                                       name=u'plone_portal_state')
+        path = portal_state.navigation_root_path()
         limit = self.data.count
         state = self.data.state
         excludeSubsite = self.data.excludeSubsite
-        query = catalog.makeAdvancedQuery({'portal_type':'News Item', 'review_state':state, 'path':path, 'sort_on':'Date','sort_order':'reverse','sort_limit':limit})
+        query = catalog.makeAdvancedQuery({'portal_type': 'News Item',
+                                          'review_state': state,
+                                          'path': path,
+                                          'sort_on': 'Date',
+                                          'sort_order': 'reverse',
+                                          'sort_limit': limit})
         if excludeSubsite:
-            query &= ~ In('path', get_subsites(path,catalog), filter=True)
-        results = catalog.evalAdvancedQuery(query, (('Date','desc'),))
+            query &= ~ In('path', get_subsites(path, catalog), filter=True)
+        results = catalog.evalAdvancedQuery(query, (('Date', 'desc'),))
         return results[:limit]
-        
+
 
 class AddForm(base.AddForm):
     form_fields = form.Fields(ILineageNewsPortlet)
@@ -123,7 +129,8 @@ class AddForm(base.AddForm):
 
     def create(self, data):
         return Assignment(**data)
-        
+
+
 class EditForm(base.EditForm):
     form_fields = form.Fields(ILineageNewsPortlet)
     label = _(u"Edit News Portlet")

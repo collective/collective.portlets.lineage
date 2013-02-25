@@ -28,13 +28,6 @@
        description="Uninstall the collection of collective.lineage aware portlets"
        provides="Products.GenericSetup.interfaces.EXTENSION"
        />
-
-     <browser:page
-       name="search_portlet_results"
-       template="templates/search_portlet_results.pt"
-       permission="zope2.View"
-       for="*"
-       />  
      
      <!-- Register the portlet -->
 
