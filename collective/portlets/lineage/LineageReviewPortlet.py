@@ -57,6 +57,13 @@ class Renderer(base.Renderer):
     def available(self):
         return not self.anonymous and len(self._data())
 
+    @property
+    def nav_root(self):
+        context = aq_inner(self.context)
+        portal_state = getMultiAdapter((context, self.request),
+                                       name=u'plone_portal_state')
+        return portal_state.navigation_root_path()
+
     def review_items(self):
         return self._data()
 
@@ -83,7 +90,6 @@ class Renderer(base.Renderer):
 
         excludeSubsite = self.data.excludeSubsite
         catalog = getToolByName(context, 'portal_catalog')
-        nav_root_path = self.navigation_root_path
 
         idnormalizer = queryUtility(IIDNormalizer)
         norm = idnormalizer.normalize
@@ -92,8 +98,8 @@ class Renderer(base.Renderer):
         # use advanced query to filter out content in subsites
         if excludeSubsite:
             query = catalog.makeAdvancedQuery({'review_state': 'pending',
-                                              'path': nav_root_path})
-            query &= ~In('path', get_subsites(nav_root_path, catalog),
+                                              'path': self.nav_root})
+            query &= ~In('path', get_subsites(self.nav_root, catalog),
                          filter=True)
             results = catalog.evalAdvancedQuery(query)
             for obj in results:
@@ -134,7 +140,8 @@ class Renderer(base.Renderer):
 class AddForm(base.AddForm):
     form_fields = form.Fields(ILineageReviewPortlet)
     label = _(u"Add Review Portlet")
-    description = _(u"This portlet displays a queue of documents awaiting review.")
+    description = _(u"This portlet displays a queue of \
+                    documents awaiting review.")
 
     def create(self, data):
         return Assignment(excludeSubsite=data.get('excludeSubsite'))
@@ -143,4 +150,5 @@ class AddForm(base.AddForm):
 class EditForm(base.EditForm):
     form_fields = form.Fields(ILineageReviewPortlet)
     label = _(u"Edit Review Portlet")
-    description = _(u"This portlet displays a queue of documents awaiting review.")
+    description = _(u"This portlet displays a queue of \
+                    documents awaiting review.")
