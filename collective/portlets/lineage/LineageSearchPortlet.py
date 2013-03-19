@@ -50,7 +50,7 @@ class Assignment(base.Assignment):
 
     @property
     def title(self):
-        return self.customTitle
+        return self.customTitle or u"Lineage Search"
 
 class Renderer(base.Renderer):
 
