@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- This file holds the setup configuration for the portal_skins tool -->
+<object name="portal_skins">
+ <object name="LineagePortletScripts"
+    meta_type="Filesystem Directory View"
+    directory="collective.portlets.lineage:skins/scripts"
+    remove="True" />
+ <object name="LineagePortletTemplates"
+    meta_type="Filesystem Directory View"
+    directory="collective.portlets.lineage:skins/templates"
+    remove="True" />
+ <skin-path name="*">
+  <layer name="LineagePortletScripts"
+    insert-after="custom"
+    remove="True" />
+  <layer name="LineagePortletTemplates"
+    insert-after="LineagePortletScripts"
+    remove="True" />
+ </skin-path>
+</object>

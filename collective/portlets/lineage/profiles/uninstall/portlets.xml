@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<portlets>
+
+ <!-- Portlet type registrations -->
+
+  <portlet
+    addview="collective.portlets.lineage.LineageNewsPortlet"
+    title="Lineage News Portlet"
+    remove="True"
+    description="ChildSite (subsite) aware news portlet">
+  </portlet> 
+  <portlet
+    addview="collective.portlets.lineage.LineageEventsPortlet"
+    title="Lineage Events Portlet"
+    remove="True"
+    description="ChildSite (subsite) aware Events portlet">
+  </portlet> 
+  <portlet
+    addview="collective.portlets.lineage.LineageSearchPortlet"
+    title="Lineage Search Portlet"
+    remove="True"
+    description="ChildSite (subsite) aware search portlet.">
+  </portlet>
+  <portlet
+    addview="collective.portlets.lineage.LineageRecentPortlet"
+    title="Lineage Recent Items"
+    remove="True"
+    description="ChildSite (subsite) aware recently modified portlet.">
+  </portlet>
+  <portlet
+    addview="collective.portlets.lineage.LineageReviewPortlet"
+    title="Lineage Review"
+    remove="True"
+    description="ChildSite (subsite) aware items awating review portlet.">
+  </portlet>
+</portlets>
