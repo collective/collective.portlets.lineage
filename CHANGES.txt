@@ -34,3 +34,13 @@ v1.1.1, 05/31/2012 -- news portlet default title is News, events portlet default
 1.2.2 02-25-2013
 ----------------
 - Fix portlet class files and templates for p.a.portlets-2.3.7 compatibility
+
+1.2.3 04-08-2013
+----------------
+- fix search template to not prepend Search before the custom title https://github.com/collective/collective.portlets.lineage/issues/5
+- add uninstall profile https://github.com/collective/collective.portlets.lineage/issues/4
+- livesearch now shows on search portlet https://github.com/collective/collective.portlets.lineage/issues/2
+- pep8
+- fix unit tests
+- add unit test for uninstall
+
