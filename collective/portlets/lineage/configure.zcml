@@ -24,7 +24,7 @@
      <genericsetup:registerProfile
        name="uninstall"
        title="Uninstall Lineage Portlets"
-       directory="profiles/default"
+       directory="profiles/uninstall"
        description="Uninstall the collection of collective.lineage aware portlets"
        provides="Products.GenericSetup.interfaces.EXTENSION"
        />
