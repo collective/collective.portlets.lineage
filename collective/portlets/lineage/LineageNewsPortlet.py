@@ -39,7 +39,8 @@ class ILineageNewsPortlet(IPortletDataProvider):
                          default=('published', ),
                          required=True,
                          value_type=schema.Choice(
-                             vocabulary="plone.app.vocabularies.WorkflowStates")
+                             vocabulary=
+                             "plone.app.vocabularies.WorkflowStates")
                          )
 
     excludeSubsite = schema.Bool(title=_(u"Exclude subsites"),
