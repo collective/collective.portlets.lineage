@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.2.5'
+version = '1.2.6'
 
 setup(name='collective.portlets.lineage',
       version=version,
