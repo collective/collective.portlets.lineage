@@ -9,7 +9,7 @@
       <span class="portletTopLeft"></span>
       <a class="tile"
          tal:attributes="href view/search_action"
-         i18n:translate="box_search">Search
+         i18n:translate="box_search">
       <span tal:content="view/search_title">Search</span></a> 
       <span class="portletTopRight"></span>
   </dt>
