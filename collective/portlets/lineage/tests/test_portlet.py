@@ -1,6 +1,8 @@
 import unittest2 as unittest
 from plone.app.testing import login
-from zope.component import getUtility, getMultiAdapter
+from zope.component import getUtility
+from zope.component import getMultiAdapter
+from zope.component import getUtilitiesFor
 from zope.app.component.hooks import setHooks, setSite
 from Products.CMFCore.utils import getToolByName
 from plone.portlets.interfaces import IPortletType
@@ -21,14 +23,14 @@ class TestPortlet(LineagePortletsTestCase):
     def setUp(self):
         self.portal = self.layer['portal']
         login(self.portal, 'admin')
-        
+
     def test_events_portlet_type_registered(self):
         portlet = getUtility(
             IPortletType,
             name='collective.portlets.lineage.LineageEventsPortlet')
         self.assertEquals(portlet.addview,
                           'collective.portlets.lineage.LineageEventsPortlet')
-    
+
     def test_news_portlet_type_registered(self):
         portlet = getUtility(
             IPortletType,
@@ -117,10 +119,24 @@ class TestPortlet(LineagePortletsTestCase):
                 (context, request, view, manager, assignment), IPortletRenderer)
             self.failUnless(isinstance(renderer, p.Renderer))
 
+    def test_portlets_installed_correctly(self):
+        portlets = [u[0] for u in getUtilitiesFor(IPortletType)]
+        portlet_names = ["collective.portlets.lineage.LineageNewsPortlet",
+                         "collective.portlets.lineage.LineageNewsPortlet,"
+                         "collective.portlets.lineage.LineageEventsPortlet,"
+                         "collective.portlets.lineage.LineageRecentPortlet,"
+                         "collective.portlets.lineage.LineageSearchPortlet,"
+                         "collective.portlets.lineage.LineageReviewPortlet"]
+        self.failUnless([name for name in portlet_names if name in portlets])
+
+    def test_portlet_uninstalls_correctly(self):
+        self.uninstall()
+        portlets = [u[0] for u in getUtilitiesFor(IPortletType)]
+
 
 class TestRenderer(LineagePortletsTestCase):
     ## These don't really test anything
-    
+
     def setUp(self):
         self.portal = self.layer['portal']
         login(self.portal, 'admin')
@@ -158,7 +174,7 @@ class LineageEventsPortletTest(LineagePortletsTestCase):
         self.portal.portal_types['Child Folder'].global_allow = True
         workflowTool = getToolByName(self.portal, 'portal_workflow')
         workflowTool.setDefaultChain('simple_publication_workflow')
-        
+
     def renderer(self, context=None, request=None, view=None, manager=None, assignment=None):
         context = context or self.portal
         request = request or self.portal.REQUEST
@@ -176,12 +192,12 @@ class LineageEventsPortletTest(LineagePortletsTestCase):
         context = self.portal.site1
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(customTitle="Frojbalc", count=5, state=('draft',), excludeSubsite=False))
         self.assertEquals("Frojbalc", r.data.customTitle)
-   
+
     def test_events_default_title(self):
         self.portal.invokeFactory('Child Folder', 'site1')
         context = self.portal.site1
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('draft',), excludeSubsite=False))
-        self.assertEquals("Events", r.data.customTitle)
+        self.assertEquals("Upcoming Events", r.data.customTitle)
 
     def test_published_events_parent_exclude_subsite(self):
         self.portal.invokeFactory('Child Folder', 'site1')
@@ -189,14 +205,14 @@ class LineageEventsPortletTest(LineagePortletsTestCase):
         self.portal.site1.invokeFactory('Event', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.e1, 'publish')
         context = self.portal
-        
+
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=True))
         self.assertEquals(0, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=True))
         self.assertEquals(0, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=True))
         self.assertEquals(0, len(r.published_events()))
-        
+
     def test_published_events_subsite_exclude_subsite(self):
         self.portal.invokeFactory('Event', 'p1e1')
         self.portal.invokeFactory('Child Folder', 'site1')
@@ -204,49 +220,49 @@ class LineageEventsPortletTest(LineagePortletsTestCase):
         self.portal.site1.invokeFactory('Event', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.e1, 'publish')
         context = self.portal.site1
-        
+
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=True))
         self.assertEquals(0, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=True))
         self.assertEquals(1, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=True))
         self.assertEquals(2, len(r.published_events()))
-        
+
     def test_published_events_nested_subsite_exclude_subsite(self):
 
         self.portal.invokeFactory('Child Folder', 'site1')
         self.portal.site1.invokeFactory('Child Folder', 'site1_subsite')
-        
+
         self.portal.invokeFactory('Event', 'p1e1')
         self.portal.site1.invokeFactory('Event', 's1e1')
         self.portal.site1.site1_subsite.invokeFactory('Event', 'e1')
         self.portal.site1.site1_subsite.invokeFactory('Event', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.site1_subsite.e1, 'publish')
         context = self.portal.site1.site1_subsite
-        
+
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=True))
         self.assertEquals(0, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=True))
         self.assertEquals(1, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=True))
         self.assertEquals(2, len(r.published_events()))
-        
-        
+
+
     #Now test if excludeSubsite=False
-    
+
     def test_published_events_parent_include_subsite(self):
         self.portal.invokeFactory('Child Folder', 'site1')
         self.portal.site1.invokeFactory('Event', 'e1')
         self.portal.site1.invokeFactory('Event', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.e1, 'publish')
         context = self.portal
-        
+
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=False))
         self.assertEquals(0, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=False))
         self.assertEquals(1, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=False))
-        self.assertEquals(2, len(r.published_events()))        
+        self.assertEquals(2, len(r.published_events()))
 
     def test_published_events_subsite_include_subsite(self):
         self.portal.invokeFactory('Event', 'p1e1')
@@ -255,26 +271,26 @@ class LineageEventsPortletTest(LineagePortletsTestCase):
         self.portal.site1.invokeFactory('Event', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.e1, 'publish')
         context = self.portal.site1
-        
+
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=False))
         self.assertEquals(0, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=False))
         self.assertEquals(1, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=False))
         self.assertEquals(2, len(r.published_events()))
-        
+
     def test_published_events_nested_subsite_include_subsite(self):
 
         self.portal.invokeFactory('Child Folder', 'site1')
         self.portal.site1.invokeFactory('Child Folder', 'site1_subsite')
-        
+
         self.portal.invokeFactory('Event', 'p1e1')
         self.portal.site1.invokeFactory('Event', 's1e1')
         self.portal.site1.site1_subsite.invokeFactory('Event', 'e1')
         self.portal.site1.site1_subsite.invokeFactory('Event', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.site1_subsite.e1, 'publish')
         context = self.portal.site1.site1_subsite
-        
+
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=False))
         self.assertEquals(0, len(r.published_events()))
         r = self.renderer(context=context, assignment=LineageEventsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=False))
@@ -284,14 +300,14 @@ class LineageEventsPortletTest(LineagePortletsTestCase):
 
 
 class LineageNewsPortletTest(LineagePortletsTestCase):
-    
+
     def setUp(self):
         self.portal = self.layer['portal']
         login(self.portal, 'admin')
         self.portal.portal_types['Child Folder'].global_allow = True
         workflowTool = getToolByName(self.portal, 'portal_workflow')
         workflowTool.setDefaultChain('simple_publication_workflow')
-        
+
     def renderer(self, context=None, request=None, view=None, manager=None, assignment=None):
         context = context or self.portal
         request = request or self.portal.REQUEST
@@ -300,11 +316,11 @@ class LineageNewsPortletTest(LineagePortletsTestCase):
         assignment = assignment or LineageNewsPortlet.Assignment()
 
         return getMultiAdapter((context, request, view, manager, assignment), IPortletRenderer)
-    
+
     def testPortletTypeRegistered(self):
         portlet = getUtility(IPortletType, name='collective.portlets.lineage.LineageNewsPortlet')
         self.assertEquals(portlet.addview, 'collective.portlets.lineage.LineageNewsPortlet')
-        
+
     def test_news_custom_title(self):
         self.portal.invokeFactory('Child Folder', 'site1')
         context = self.portal.site1
@@ -323,14 +339,14 @@ class LineageNewsPortletTest(LineagePortletsTestCase):
         self.portal.site1.invokeFactory('News Item', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.e1, 'publish')
         context = self.portal
-        
+
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=True))
         self.assertEquals(0, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=True))
         self.assertEquals(0, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=True))
         self.assertEquals(0, len(r.published_news_items()))
-        
+
     def test_published_news_subsite_exclude_subsite(self):
         self.portal.invokeFactory('News Item', 'p1e1')
         self.portal.invokeFactory('Child Folder', 'site1')
@@ -338,49 +354,49 @@ class LineageNewsPortletTest(LineagePortletsTestCase):
         self.portal.site1.invokeFactory('News Item', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.e1, 'publish')
         context = self.portal.site1
-        
+
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=True))
         self.assertEquals(0, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=True))
         self.assertEquals(1, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=True))
         self.assertEquals(2, len(r.published_news_items()))
-        
+
     def test_published_news_nested_subsite_exclude_subsite(self):
 
         self.portal.invokeFactory('Child Folder', 'site1')
         self.portal.site1.invokeFactory('Child Folder', 'site1_subsite')
-        
+
         self.portal.invokeFactory('News Item', 'p1e1')
         self.portal.site1.invokeFactory('News Item', 's1e1')
         self.portal.site1.site1_subsite.invokeFactory('News Item', 'e1')
         self.portal.site1.site1_subsite.invokeFactory('News Item', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.site1_subsite.e1, 'publish')
         context = self.portal.site1.site1_subsite
-        
+
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=True))
         self.assertEquals(0, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=True))
         self.assertEquals(1, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=True))
         self.assertEquals(2, len(r.published_news_items()))
-        
-        
+
+
     #Now test if excludeSubsite=False
-    
+
     def test_published_news_parent_include_subsite(self):
         self.portal.invokeFactory('Child Folder', 'site1')
         self.portal.site1.invokeFactory('News Item', 'e1')
         self.portal.site1.invokeFactory('News Item', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.e1, 'publish')
         context = self.portal
-        
+
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=False))
         self.assertEquals(0, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=False))
         self.assertEquals(1, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=False))
-        self.assertEquals(2, len(r.published_news_items()))        
+        self.assertEquals(2, len(r.published_news_items()))
 
     def test_published_news_subsite_include_subsite(self):
         self.portal.invokeFactory('News Item', 'p1e1')
@@ -389,26 +405,26 @@ class LineageNewsPortletTest(LineagePortletsTestCase):
         self.portal.site1.invokeFactory('News Item', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.e1, 'publish')
         context = self.portal.site1
-        
+
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=False))
         self.assertEquals(0, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=False))
         self.assertEquals(1, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', 'private',),excludeSubsite=False))
         self.assertEquals(2, len(r.published_news_items()))
-        
+
     def test_published_news_nested_subsite_include_subsite(self):
 
         self.portal.invokeFactory('Child Folder', 'site1')
         self.portal.site1.invokeFactory('Child Folder', 'site1_subsite')
-        
+
         self.portal.invokeFactory('News Item', 'p1e1')
         self.portal.site1.invokeFactory('News Item', 's1e1')
         self.portal.site1.site1_subsite.invokeFactory('News Item', 'e1')
         self.portal.site1.site1_subsite.invokeFactory('News Item', 'e2')
         self.portal.portal_workflow.doActionFor(self.portal.site1.site1_subsite.e1, 'publish')
         context = self.portal.site1.site1_subsite
-        
+
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('draft',),excludeSubsite=False))
         self.assertEquals(0, len(r.published_news_items()))
         r = self.renderer(context=context, assignment=LineageNewsPortlet.Assignment(count=5, state=('published', ),excludeSubsite=False))
@@ -441,13 +457,13 @@ class LineageRecentPortletTest(LineagePortletsTestCase):
     def test_exclude_subsite_checkbox(self):
         self.portal.invokeFactory('Child Folder', 'site1')
         context = self.portal
-        
+
         r = self.renderer(context=context, assignment=LineageRecentPortlet.Assignment(excludeSubsite=False))
         self.assertEquals(False, r.is_parent_site_only())
-        
+
         r = self.renderer(context=context, assignment=LineageRecentPortlet.Assignment(excludeSubsite=True))
         self.assertEquals(True, r.is_parent_site_only())
-    
+
     def test_subsite_content_excluded(self):
         self.portal.invokeFactory('Child Folder','site1')
         self.portal.site1.invokeFactory('News Item', 's1_n1')
@@ -491,11 +507,11 @@ class LineageReviewPortletTest(LineagePortletsTestCase):
     def test_exclude_subsite_checkbox(self):
         self.portal.invokeFactory('Child Folder', 'site1')
         context = self.portal
-        
+
         r = self.renderer(context=context, assignment=LineageReviewPortlet.Assignment(excludeSubsite=False))
         #self.assertEquals(False, r.is_parent_site_only())
         self.assertEquals(False, r.data.excludeSubsite)
-        
+
         r = self.renderer(context=context, assignment=LineageReviewPortlet.Assignment(excludeSubsite=True))
         self.assertEquals(True, r.data.excludeSubsite)
 
