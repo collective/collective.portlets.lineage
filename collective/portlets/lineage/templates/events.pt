@@ -13,7 +13,7 @@
            tal:omit-tag="not:all_events_link"
            tal:attributes="href all_events_link"
            i18n:translate="box_events">
-            Upcoming Events
+           <span tal:content="view/title">Upcoming Events</span>
         </a>
         <span class="portletTopRight"></span>
     </dt>
