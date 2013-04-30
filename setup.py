@@ -6,7 +6,7 @@ version = '1.2.6'
 setup(name='collective.portlets.lineage',
       version=version,
       description="A collection of collective.lineage aware portlets",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=open("README.rst").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[

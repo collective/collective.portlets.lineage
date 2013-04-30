@@ -76,3 +76,8 @@ Changelog
 1.2.6 (04-08-2013)
 ------------------
 - fix packaging
+
+1.2.7 (04-30-2013)
+------------------
+- fix events portlet custom title. resolves https://github.com/collective/collective.portlets.lineage/issues/6
+
