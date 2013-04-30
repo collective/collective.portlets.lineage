@@ -55,12 +55,12 @@ class Assignment(base.Assignment):
 
     implements(ILineageEventsPortlet)
 
-    customTitle = u"Upcoming Events"
+    customTitle = u""
     count = 5
     state = ('published')
     excludeSubsite = False
 
-    def __init__(self, customTitle=u"Upcoming Events", count=5,
+    def __init__(self, customTitle=u"", count=5,
                  state=('published', ), excludeSubsite=False):
         self.customTitle = customTitle
         self.count = count
@@ -69,9 +69,7 @@ class Assignment(base.Assignment):
 
     @property
     def title(self):
-        if self.customTitle is None:
-            self.customTitle = u"Lineage Events"
-        return self.customTitle
+        return self.customTitle or u"Lineage Events"
 
 
 class Renderer(base.Renderer):
