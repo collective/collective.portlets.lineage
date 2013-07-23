@@ -81,3 +81,7 @@ Changelog
 ------------------
 - fix events portlet custom title. resolves https://github.com/collective/collective.portlets.lineage/issues/6
 
+1.2.8 (07-23-2013)
+------------------
+- fix news portlet custom title. resolves https://github.com/collective/collective.portlets.lineage/issues/7
+
