@@ -119,6 +119,8 @@ class Renderer(base.Renderer):
         results = catalog.evalAdvancedQuery(query, (('Date', 'desc'),))
         return results[:limit]
 
+    def title(self):
+        return self.data.customTitle
 
 class AddForm(base.AddForm):
     form_fields = form.Fields(ILineageNewsPortlet)
