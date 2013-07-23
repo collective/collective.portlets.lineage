@@ -23,44 +23,43 @@ from collective.portlets.lineage.LineagePortletsCommon import get_subsites
 
 class ILineageNewsPortlet(IPortletDataProvider):
 
-    customTitle = schema.TextLine(title=_(u"Add a title"),
-                                  description=_(u"Displays a custom title \
-                                                  for this portlet."),
-                                  required=False)
+    customTitle = schema.TextLine(
+        title=_(u"Add a title"),
+        description=_(u"Displays a custom title for this portlet."),
+        required=False)
 
-    count = schema.Int(title=_(u'Number of items to display'),
-                       description=_(u'How many items to list.'),
-                       required=True,
-                       default=5)
+    count = schema.Int(
+        title=_(u'Number of items to display'),
+        description=_(u'How many items to list.'),
+        required=True,
+        default=5)
 
-    state = schema.Tuple(title=_(u"Workflow state"),
-                         description=_(u"Items in which workflow \
-                                       state to show."),
-                         default=('published', ),
-                         required=True,
-                         value_type=schema.Choice(
-                             vocabulary=
-                             "plone.app.vocabularies.WorkflowStates")
-                         )
+    state = schema.Tuple(
+        title=_(u"Workflow state"),
+        description=_(u"Items in which workflow state to show."),
+        default=('published', ),
+        required=True,
+        value_type=schema.Choice(
+            vocabulary="plone.app.vocabularies.WorkflowStates"))
 
-    excludeSubsite = schema.Bool(title=_(u"Exclude subsites"),
-                                 description=_(u"If selected, search results \
-                                               will not include news items \
-                                               added to subsites."),
-                                 default=False,
-                                 required=False)
+    excludeSubsite = schema.Bool(
+        title=_(u"Exclude subsites"),
+        description=_(u"If selected, search results will not include \
+                      news items added to subsites."),
+        default=False,
+        required=False)
 
 
 class Assignment(base.Assignment):
 
     implements(ILineageNewsPortlet)
 
-    customTitle = u"News"
+    customTitle = u""
     count = 5
     state = ('published')
     excludeSubsite = False
 
-    def __init__(self, customTitle=u"News", count=5, state=('published', ),
+    def __init__(self, customTitle=u"", count=5, state=('published', ),
                  excludeSubsite=False):
         self.customTitle = customTitle
         self.count = count
@@ -69,9 +68,7 @@ class Assignment(base.Assignment):
 
     @property
     def title(self):
-        if self.customTitle is None:
-            self.customTitle = u"Lineage News"
-        return self.customTitle
+        return self.customTitle or u"Lineage News"
 
 
 class Renderer(base.Renderer):
